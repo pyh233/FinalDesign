@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员登陆</title>
+</head>
+<body>
+    管理员登陆界面
+    <br>
+    {{msg}}
+    <br>
+    <form action="/admin/login" method="post">
+        <input type="text" name="admin_name"><br>
+        <input type="password" name="admin_passwd">
+        <button type="submit">登陆</button>
+    </form>
+</body>
+</html>
