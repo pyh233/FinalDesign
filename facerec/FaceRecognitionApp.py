@@ -84,7 +84,10 @@ class FaceRecognitionApp(QMainWindow):
                     name = self.known_face_names[first_match_index]
 
                     # 同时做记录，xxx开门,我考虑使用单独的一个线程
-                    log_thread = threading.Thread(target=lambda: generate("../log/logs/open_door_mark.txt", "-"+name[0] + "---open the door"))
+                    # TODO：路径
+                    log_thread = threading.Thread(
+                        target=lambda: generate("../log/logs/open_door_mark.txt", "-"+name[0] + "---open the door")
+                    )
                     log_thread.start()
 
                     self.door_control.open_door()  # 调用门控函数打开门

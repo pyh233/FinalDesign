@@ -8,8 +8,13 @@
 <body>
     管理界面<br>
     {{face_msg}}
+    {{msg}}
     <form action="/admin/logout" method="post">
         <button type="submit">登出</button>
+    </form>
+    <br>
+    <form action="/skipToAddFace" method="GET">
+         <button type="submit">前往添加人脸</button>
     </form>
 </body>
 </html>

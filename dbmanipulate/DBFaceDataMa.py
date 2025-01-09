@@ -15,16 +15,17 @@ class DBFaceDataMa:
                 ''')
 
         self.conn.commit()
+        # 获取人脸信息
     def get_face_data(self):
         sql = "SELECT name, encoding FROM faces"
         self.cursor.execute(sql)
         data = self.cursor.fetchall()
         return data
-    def insert_face_data(self):
+        # 插入人脸信息
+    def insert_face_data(self, name, face_data):
         pass
-    def update_face_data(self):
-        pass
-    def delete_face_data(self):
+        # 删除人脸信息
+    def delete_face_data(self, name, face_data):
         pass
     def close(self):
         # 不需要关闭cursor,因为conn会自动关闭cursor
@@ -32,5 +33,7 @@ class DBFaceDataMa:
         self.conn.close()
 if __name__ == '__main__':
     d = DBFaceDataMa()
-    print(d.get_face_data())
+    face_data = d.get_face_data()
+    new_binary_data_list = [(name, data[:16]) for name, data in face_data]
+    print(new_binary_data_list)
     d.close()
