@@ -18,11 +18,15 @@ class FlaskApp:
         # Flask路由设置
         self.app.add_url_rule('/', 'index', self.index)
         self.app.add_url_rule('/skipToLogin', 'skipToLogin', self.skipToLogin,methods=['GET'])
+        self.app.add_url_rule('/mainPage', 'mainPage', self.mainPage,methods=['GET'])
+        self.app.add_url_rule('/loginPage', 'loginPage', self.loginPage,methods=['GET'])
         self.app.add_url_rule('/admin/login', 'login', self.login, methods=['POST'])
         self.app.add_url_rule('/admin/logout', 'logout', self.logout, methods=['POST'])
         self.app.add_url_rule('/test', 'admin_main', self.admin_main, methods=['GET', 'POST'])
         self.app.add_url_rule('/skipToAddFace', 'skipToAddFace', self.skipToAddFace, methods=['GET'])
+        self.app.add_url_rule('/addFacePage', 'addFacePage', self.addFacePage, methods=['GET'])
         self.app.add_url_rule('/addFace', 'addFace', self.addFace, methods=['POST'])
+
         self.app.add_url_rule('/delFace', 'delFace', self.deleteFace, methods=['POST'])
 
     # 欢迎界面
@@ -33,20 +37,33 @@ class FlaskApp:
         # 获取msg的信息，如果是第一次登陆msg为None,此时为msg赋值为"".
         # 不是第一次登陆就会显示登陆失败。
         # TODO：？
-        msg = session.get('msg', "")
-        # 获取所有人脸信息 如果人脸信息为None就给予未录入信息。
-        face_msg_obj = DBFaceDataMa()
-        face_msg = face_msg_obj.get_face_data()
-        face_msg_obj.close()
-        # 需要对人脸数据进行部分展示，因为全部人脸数据太长了，页面无法展示
-        face_msg = [(name, data[:20]) for name, data in face_msg]
-        if len(face_msg) == 0:
-            face_msg = "尚未录入人脸信息"
-        # 只有通过身份验证才能转到展示页面，否则跳回登陆，记录msg
+        msg = session.get("msg", "")
+        # 只有通过身份验证才能转到展示页面，否则跳回登陆页面，记录msg
+        # 身份验证通过才会查询信息，否则不查询
         if session.get("identity"):
-            return render_template("main.html", face_msg=face_msg)
+            # # 获取所有人脸信息 如果人脸信息为None就给予未录入信息。
+            # face_msg_obj = DBFaceDataMa()
+            # face_msg = face_msg_obj.get_face_data()
+            # face_msg_obj.close()
+            # # 需要对人脸数据进行部分展示，因为全部人脸数据太长了，页面无法展示
+            # face_msg = [(name, data[:20]) for name, data in face_msg]
+            face_msg = self.load_face_data()
+            if len(face_msg) == 0:
+                face_msg = "尚未录入人脸信息"
+            session['face_msg'] = face_msg
+            # return render_template("main.html",face_msg=face_msg)
+            return redirect(url_for("mainPage"))
         else:
-            return render_template("login.html", msg=msg)
+            return redirect(url_for("loginPage",msg=msg))
+    # 跳转登陆页面，请求参数为登陆成功或失败信提示
+    def loginPage(self):
+        msg = request.args.get("msg")
+        return render_template("login.html",msg=msg)
+    # 跳转主界面
+    def mainPage(self):
+        face_msg = session.get("face_msg","")
+        msg = session.get("msg","发生了一个未知错误")
+        return render_template("main.html", face_msg=face_msg, msg=msg)
     # 登陆功能
     def login(self):
         # 获取输入的用户名和密码
@@ -69,8 +86,9 @@ class FlaskApp:
 
     # 跳转增加人脸信息界面
     def skipToAddFace(self):
+        return redirect(url_for("addFacePage"))
+    def addFacePage(self):
         return render_template("addFaceMsg.html")
-
     # 增加人脸信息请求
     def addFace(self):
         if session['identity']=="pyh":
@@ -118,3 +136,12 @@ class FlaskApp:
 
     def run(self):
         self.app.run(host='0.0.0.0', port=5000, threaded=True)
+
+    def load_face_data(self):
+        # 获取所有人脸信息 如果人脸信息为None就给予未录入信息。
+        face_msg_obj = DBFaceDataMa()
+        face_msg = face_msg_obj.get_face_data()
+        face_msg_obj.close()
+        # 需要对人脸数据进行部分展示，因为全部人脸数据太长了，页面无法展示
+        face_msg = [(name, data[:20]) for name, data in face_msg]
+        return face_msg

@@ -1,6 +1,8 @@
 """数据库操作模块"""
 import sqlite3
 
+
+
 class DBFaceDataMa:
     def __init__(self):
         # self.conn = sqlite3.connect('../face_recognition.db')
@@ -24,9 +26,17 @@ class DBFaceDataMa:
         # 插入人脸信息
     def insert_face_data(self, name, face_data):
         pass
+        # sql = "INSERT INTO faces(name, encoding) VALUES(?,?)"
+        # self.cursor.execute(sql,(name,face_data))
+        # self.conn.commit()
+        # return self.cursor.rowcount
         # 删除人脸信息
     def delete_face_data(self, name, face_data):
         pass
+        # sql = "DELETE FROM faces WHERE name=? AND encoding=?"
+        # self.cursor.execute(sql,(name,face_data))
+        # self.conn.commit()
+        # return self.cursor.rowcount
     def close(self):
         # 不需要关闭cursor,因为conn会自动关闭cursor
         # self.cursor.close()

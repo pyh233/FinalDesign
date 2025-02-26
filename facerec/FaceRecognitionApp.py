@@ -6,6 +6,7 @@ import numpy as np
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QLabel
+
 from otherinterface.DoorControl import DoorControl
 from dbmanipulate.DBFaceDataMa import DBFaceDataMa
 from log.log4p.GenerateLog import generate
@@ -91,7 +92,6 @@ class FaceRecognitionApp(QMainWindow):
                     log_thread.start()
 
                     self.door_control.open_door()  # 调用门控函数打开门
-
                 # 在人脸周围画矩形框并显示名字
                 cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
                 cv2.putText(frame, name, (left, top-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
